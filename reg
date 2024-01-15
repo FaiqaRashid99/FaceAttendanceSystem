@@ -1,0 +1,223 @@
+import re
+from tkinter import*
+from tkinter import ttk,messagebox
+from wsgiref import validate
+from PIL import Image, ImageTk  #pip install pillow
+from tkinter import messagebox
+import pymysql
+
+from login import Login_Window
+
+def main():
+    win=Tk()
+    app=Register(win)
+    win.mainloop()      #for stoping window from closing on its own
+
+
+class Register:
+        def __init__(self,root):
+                self.root=root
+                self.root.title("Register")
+                self.root.geometry("1366x768")#1366x768   960x540
+                self.root.state("zoomed")
+
+
+        #background image
+                img0=Image.open('F:\\FYP folder\\bg5.gif')
+                self.bg=ImageTk.PhotoImage(img0)
+                bg_lbl=Label(self.root,image=self.bg)
+                bg_lbl.place(x=0,y=0,relwidth=1,relheight=1)
+
+        #left image
+                img1=Image.open('F:\\FYP folder\\lf2.jpg')
+                self.lf=ImageTk.PhotoImage(img1)
+                lf_lbl=Label(self.root,image=self.lf)
+                lf_lbl.place(x=88,y=100,width=400,height=500)
+        #registration frame
+                frame1=Frame(self.root,bg="white")
+                frame1.place(x=480,y=100,width=700,height=500)
+
+                title=Label(frame1,text="REGISTER HERE" ,font=("times new roman",20,"bold"),bg="white",fg="green").place(x=50,y=30)
+                
+                # 1 ####################################################################################################
+
+                fname=Label(frame1,text="First name" ,font=("times new roman",15,"bold"),bg="white",fg="gray").place(x=50,y=100)
+                self.txt_fname=Entry(frame1,font=("times new roman",15),bg=("lightgray"))
+                self.txt_fname.place(x=50,y=130,width=250)
+                        #Bind and Validate:
+                validate_fname=self.root.register(self.checkname)  #register is an inbuilt function in python
+                self.txt_fname.config(validate="key",validatecommand=(validate_fname,"%P"))
+
+                lname=Label(frame1,text="Last name" ,font=("times new roman",15,"bold"),bg="white",fg="gray").place(x=370,y=100)
+                self.txt_lname=Entry(frame1,font=("times new roman",15),bg=("lightgray"))
+                self.txt_lname.place(x=370,y=130,width=250)
+                        #Bind and Validate:
+                validate_lname=self.root.register(self.checkname)  #register is an inbuilt function in python
+                self.txt_lname.config(validate="key",validatecommand=(validate_lname,"%P"))
+
+                # 2 ######################################################################################################
+
+                contact=Label(frame1,text="Contact Number" ,font=("times new roman",15,"bold"),bg="white",fg="gray").place(x=50,y=170)
+                self.txt_contact=Entry(frame1,font=("times new roman",15),bg=("lightgray"))
+                self.txt_contact.place(x=50,y=200,width=250)
+                        
+
+                email=Label(frame1,text="Email" ,font=("times new roman",15,"bold"),bg="white",fg="gray").place(x=370,y=170)
+                self.txt_email=Entry(frame1,font=("times new roman",15),bg=("lightgray"))
+                self.txt_email.place(x=370,y=200,width=250)
+                       
+                # 3 ######################################################################################################
+
+                question=Label(frame1,text="Security Question" ,font=("times new roman",15,"bold"),bg="white",fg="gray").place(x=50,y=240)
+                self.cmb_quest=ttk.Combobox(frame1,font=("times new roman",13),state="readonly",justify=CENTER)
+                self.cmb_quest['values']=("Select","Your Favoruit Book Name","Your first pet name","Your Birth Place","Your Best Friend Name")
+                self.cmb_quest.place(x=50,y=270,width=250)
+                self.cmb_quest.current(0)
+
+                answer=Label(frame1,text="Answer" ,font=("times new roman",15,"bold"),bg="white",fg="gray").place(x=370,y=240)
+                self.txt_ans=Entry(frame1,font=("times new roman",15),bg=("lightgray"))
+                self.txt_ans.place(x=370,y=270,width=250)
+
+                # 4 ######################################################################################################
+
+                password=Label(frame1,text="Password" ,font=("times new roman",15,"bold"),bg="white",fg="gray").place(x=50,y=310)
+                self.txt_password=Entry(frame1,font=("times new roman",15),bg=("lightgray"))
+                self.txt_password.place(x=50,y=340,width=250)
+                        
+                cpassword=Label(frame1,text="Confirm Password" ,font=("times new roman",15,"bold"),bg="white",fg="gray").place(x=370,y=310)
+                self.txt_cpassword=Entry(frame1,font=("times new roman",15),bg=("lightgray"))
+                self.txt_cpassword.place(x=370,y=340,width=250)
+
+                # 5 ######################################################################################################
+
+                self.var_chk=IntVar()  #checkbox ki value get kernay k liye function is "variable" not textvariable ooook
+                chk=Checkbutton(frame1,text="I Agree The Terms and Conditions",variable=self.var_chk,onvalue=1,offvalue=0,bg="white", font=("times new roman",12)).place(x=50,y=380) #onvalue mean jb ye checkbox click ho ga to is ki 1 value ho gi of off value ho ga to is ki value 0 ho gi
+                self.chk_lbl=Label(frame1,text="",font=("times new roman",14),fg='red',bg=("lightgray"))
+                self.chk_lbl.place(x=300,y=380,width=325)
+
+                self.btn_img=ImageTk.PhotoImage(file="F:\\FYP folder\\r1.JPG")
+                btn_register=Button(frame1,image=self.btn_img,bd=0,cursor="hand2",command=self.register_data).place(x=50,y=420) #bd=border
+
+                self.btn_login=ImageTk.PhotoImage(file="F:\\FYP folder\\signin1.JPG")
+                btn_login=Button(frame1,image=self.btn_login,bd=0,cursor="hand2",command=self.login_window).place(x=370,y=420,height=56)
+                
+                #############################################################################################
+        def login_window(self):
+                self.new_window=Toplevel(self.root)
+                self.app=Login_Window(self.new_window)
+
+
+        def clear(self):
+                self.txt_fname.delete(0,END)
+                self.txt_lname.delete(0,END)
+                self.txt_contact.delete(0,END)
+                self.txt_email.delete(0,END)
+                self.cmb_quest.current(0)
+                self.txt_ans.delete(0,END)
+                self.txt_password.delete(0,END)
+                self.txt_cpassword.delete(0,END)
+
+        def register_data(self):
+                if self.txt_fname.get()=="":
+                        messagebox.showerror("Error","PLease enter your first name",parent=self.root)
+                elif self.txt_lname.get()=="":
+                        messagebox.showerror("Error","PLease enter your last name",parent=self.root)
+                elif self.txt_contact.get()=="" or len(self.txt_contact.get())!=11:
+                        messagebox.showerror("Error","PLease enter the valid contact having length=11",parent=self.root)
+                elif self.txt_email.get()=="":
+                        messagebox.showerror("Error","PLease enter your Email",parent=self.root)          
+                elif self.cmb_quest.get()=="Select":
+                        messagebox.showerror("Error","Kindly select the question",parent=self.root)
+                elif self.txt_ans.get()=="" :
+                        messagebox.showerror("Error","PLease enter the security answer",parent=self.root)
+                elif self.txt_password.get()=="" :
+                        messagebox.showerror("Error","Password is necessary for security, please enter the password",parent=self.root)
+                elif self.txt_cpassword.get()=="" :
+                        messagebox.showerror("Error","Enter the password for further confirmation",parent=self.root)
+                elif self.txt_password.get()!=self.txt_cpassword.get():
+                        messagebox.showerror("Error","Password and Confirm Password should be same",parent=self.root)
+                elif self.txt_email.get()!=None and self.txt_password.get()!=None:
+                        x=self.checkemail(self.txt_email.get())
+                        y=self.checkpassword(self.txt_password.get())
+                if x==True and y==True:
+                        if self.var_chk.get()==0:
+                                self.chk_lbl.config(text='Please agree our terms & conditions',fg='red')
+                        else:
+                                self.chk_lbl.config(text='Checked',fg='green')
+                                try:
+                                        con=pymysql.connect(host="localhost",user="root",password="", database="fas")
+                                        cur=con.cursor() #cursor() helps to execute queries
+                                        cur.execute("select * from employee where email=%s",self.txt_email.get())
+                                        row=cur.fetchone() # this will fetch the data from table if its email is similar to entered email
+                                        # print(row)
+                                        if row!=None:
+                                                messagebox.showerror("Error","The user already exists, please try with another email",parent=self.root)
+                                        else:
+                                                cur.execute("insert into employee(f_name,l_name,contact,email,question,answer,password) values(%s,%s,%s,%s,%s,%s,%s)",
+                                                (self.txt_fname.get(),
+                                                self.txt_lname.get(),
+                                                self.txt_contact.get(),
+                                                self.txt_email.get(),
+                                                self.cmb_quest.get(),
+                                                self.txt_ans.get(),
+                                                self.txt_password.get()
+                                                ))
+                                                con.commit() #saves changes in database as it is
+                                                con.close()
+                                                messagebox.showinfo("Success","Successfully Registered!",parent=self.root)
+                                                self.clear()
+
+                                except Exception as es:
+                                        messagebox.showerror("Error",f"Error due to {str[es]}",parent=self.root)
+
+
+
+
+
+##########################  VALIDATION FUNCTIONS #######################################################
+
+#call back function: entry field me enter hotay sath us ko validate kre
+        def checkname(self,name):
+                if name.isalnum():   # isalnum= for validating digits + characters
+                        return True
+                if name=="":
+                        return True
+                else:
+                        messagebox.showerror("Invalid","Not Allowed "+name[-1])
+                        return False
+        def checkcontact(self,contact):
+                if contact.isdigit():
+                        return True
+                if len(str(contact))==0:
+                        return True
+                else:
+                        messagebox.showerror("Invalid","Not Allowed "+contact[-1])
+                        return False
+        
+        def checkpassword(self,password):
+                if len(password)<=21: #max length must not exeed 21
+                        if re.match("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z](?=.*[^a-bA-B0-9]))",password):
+                                return True
+                        else:
+                                messagebox.showinfo('Alert','Password must contain minimum one Capital letter,a digit and a spacial character')
+                                return False
+                else:
+                        messagebox.showerror("Inavalid", "Length of password must not exceed from 21" )
+                        return False
+
+        def checkemail(self,email):
+                if len(email)>7: #max length must not exeed 21
+                        if re.match("^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$",email):
+                                return True
+                        else:
+                                messagebox.showinfo('Alert','Invalid Email, please enter valid email (example: abc@gmail.com')
+                                return False
+                else:
+                        messagebox.showerror("Inavalid", "Length of email must not be less than 8" )
+                        return False
+                        
+        
+
+
+if __name__=="__main__":
+    main()
